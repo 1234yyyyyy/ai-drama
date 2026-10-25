@@ -37,8 +37,11 @@ function paint(){var on=!!m[k];b.classList.toggle('on',on);b.textContent=(on?'�
 b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(m[k])delete m[k];else m[k]=info(c);save();paint();upd()});c.appendChild(b)});
 nt.addEventListener('click',function(){hide=!hide;upd()});
 document.getElementById('ns').addEventListener('click',function(){var ks=Object.keys(m);if(!ks.length){alert('還沒勾選任何不感興趣的影片');return}
-var body='<!-- 每行格式：- #編號 | 標題 | 平台 | 類型 | 連結 -->\n'+ks.map(function(k){var i=m[k];return '- #'+(i.num||'?')+' | '+String(i.title).replace(/\|/g,'/')+' | '+i.plat+' | '+i.genre+' | '+k}).join('\n');
-var d=new Date().toISOString().slice(0,10);window.open('https://github.com/'+R+'/issues/new?labels=not-important&title='+encodeURIComponent('不感興趣回饋 '+d+'（'+ks.length+' 部）')+'&body='+encodeURIComponent(body),'_blank')});
+var nums=ks.map(function(k){return m[k].num||k}).join(',');var body='nope: '+nums;var d=new Date().toISOString().slice(0,10);var t='不感興趣 '+d+' ('+ks.length+')';
+var url='https://github.com/'+R+'/issues/new?labels=not-important&title='+encodeURIComponent(t)+'&body='+encodeURIComponent(body);
+if(url.length<=1800){window.open(url,'_blank');return}
+var go=function(){window.open('https://github.com/'+R+'/issues/new?labels=not-important&title='+encodeURIComponent(t),'_blank')};
+if(navigator.clipboard)navigator.clipboard.writeText(body).then(function(){alert('清單太長，已複製到剪貼簿。請在開啟的 GitHub 頁面內文貼上後送出。');go()},function(){prompt('請複製以下內容，貼到 GitHub 內文後送出：',body);go()});else{prompt('請複製以下內容，貼到 GitHub 內文後送出：',body);go()}});
 upd()})();
 </script>
 </body></html>
